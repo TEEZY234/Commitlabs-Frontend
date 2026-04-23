@@ -30,3 +30,15 @@ export {
   HTTP_ERROR_CODES,
 } from "./errors";
 export { withApiHandler } from "./withApiHandler";
+export {
+  userPreferencesSchema,
+  jsonFilePreferencesStore,
+  requireWalletAuth,
+  DEFAULT_PREFERENCES,
+  SUPPORTED_CURRENCIES,
+} from "./preferences";
+export type {
+  UserPreferences,
+  PreferencesStore,
+  SupportedCurrency,
+} from "./preferences";
