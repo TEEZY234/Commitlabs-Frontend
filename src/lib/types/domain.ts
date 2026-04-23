@@ -86,3 +86,19 @@ export interface CreateListingRequest {
   currencyAsset: string;
   sellerAddress: string;
 }
+
+export type NotificationSeverity = 'info' | 'warning' | 'critical';
+
+export type NotificationType = 'expiry' | 'violation' | 'health_check' | 'update';
+
+export interface Notification {
+  id: string;
+  ownerAddress: string;
+  title: string;
+  message: string;
+  severity: NotificationSeverity;
+  type: NotificationType;
+  read: boolean;
+  createdAt: string;
+  relatedCommitmentId?: string;
+}
