@@ -12,6 +12,7 @@ import {
   ValidationError,
   TooManyRequestsError,
 } from '@/lib/backend/errors';
+import { getClientIp } from '@/lib/backend/getClientIp';
 import { withApiHandler } from '@/lib/backend/withApiHandler';
 import { ok } from '@/lib/backend/apiResponse';
 import { parseJsonWithLimit, JSON_BODY_LIMITS } from '@/lib/backend/jsonBodyLimit';

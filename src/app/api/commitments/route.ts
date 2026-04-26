@@ -39,7 +39,7 @@ export const GET = withApiHandler(async (req: NextRequest) => {
 
   const { ownerAddress, page, pageSize, status, type, minCompliance } = queryResult.data;
 
-  const ip = req.ip ?? req.headers.get("x-forwarded-for") ?? "anonymous";
+  const ip = getClientIp(req);
 
   const { allowed, retryAfterSeconds } = await checkRateLimit(ip, "api/commitments");
   if (!allowed) {
@@ -95,7 +95,7 @@ export const GET = withApiHandler(async (req: NextRequest) => {
 });
 
 export const POST = withApiHandler(async (req: NextRequest) => {
-  const ip = req.ip ?? req.headers.get("x-forwarded-for") ?? "anonymous";
+  const ip = getClientIp(req);
 
   const { allowed, retryAfterSeconds } = await checkRateLimit(ip, "api/commitments");
   if (!allowed) {
