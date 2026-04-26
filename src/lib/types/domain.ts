@@ -87,18 +87,75 @@ export interface CreateListingRequest {
   sellerAddress: string;
 }
 
-export type NotificationSeverity = 'info' | 'warning' | 'critical';
+// ---------------------------------------------------------------------------
+// Commitment history / timeline
+// ---------------------------------------------------------------------------
 
-export type NotificationType = 'expiry' | 'violation' | 'health_check' | 'update';
+/**
+ * Discriminated union of all lifecycle event kinds that can appear in a
+ * commitment's history timeline.
+ *
+ * | kind          | trigger                                      |
+ * |---------------|----------------------------------------------|
+ * | created       | Commitment first recorded on-chain           |
+ * | attestation   | Any attestation recorded against it          |
+ * | early_exit    | Owner triggered an early exit                |
+ * | settlement    | Commitment reached maturity and was settled  |
+ */
+export type HistoryEventKind =
+  | 'created'
+  | 'attestation'
+  | 'early_exit'
+  | 'settlement';
 
-export interface Notification {
-  id: string;
-  ownerAddress: string;
-  title: string;
-  message: string;
-  severity: NotificationSeverity;
-  type: NotificationType;
-  read: boolean;
-  createdAt: string;
-  relatedCommitmentId?: string;
+export interface BaseHistoryEvent {
+  /** Stable, deterministic identifier for this event (kind + source id). */
+  eventId: string;
+  kind: HistoryEventKind;
+  /** ISO-8601 timestamp used for chronological ordering. */
+  occurredAt: string;
+  /** Optional on-chain transaction reference. */
+  txHash?: string;
 }
+
+export interface CreatedEvent extends BaseHistoryEvent {
+  kind: 'created';
+  payload: {
+    asset: string;
+    amount: string;
+    expiresAt?: string;
+  };
+}
+
+export interface AttestationEvent extends BaseHistoryEvent {
+  kind: 'attestation';
+  payload: {
+    attestationId: string;
+    attestationType: string;
+    complianceScore?: number;
+    violation?: boolean;
+    severity?: string;
+  };
+}
+
+export interface EarlyExitEvent extends BaseHistoryEvent {
+  kind: 'early_exit';
+  payload: {
+    penaltyAmount?: string;
+    exitedBy?: string;
+  };
+}
+
+export interface SettlementEvent extends BaseHistoryEvent {
+  kind: 'settlement';
+  payload: {
+    settlementAmount?: string;
+    finalStatus?: string;
+  };
+}
+
+export type HistoryEvent =
+  | CreatedEvent
+  | AttestationEvent
+  | EarlyExitEvent
+  | SettlementEvent;
