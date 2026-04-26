@@ -22,7 +22,7 @@ const LIMITS: Record<string, { windowMs: number; maxRequests: number }> = {
  * @param routeId - Identifier for the specific route or resource being accessed.
  * @returns Promise<boolean> - Returns true if the request is allowed, false if rate limited.
  */
-export async function checkRateLimit(key: string, routeId: string): Promise<boolean> {
+export async function checkRateLimit(key: string, routeId: string): Promise<RateLimitResult> {
     const isDev = process.env.NODE_ENV === 'development';
     const kv = getKV();
 
